@@ -1,9 +1,11 @@
 import { Request, Response, Router } from "express";
-import userRouter from "./userRouter";
+import userRouter from "./user.router";
+import { workSpaceRouter } from "./workSpacerouter";
 
 const apiV1Router = Router();
 
 apiV1Router.use("/users", userRouter);
+apiV1Router.use("/workspaces", workSpaceRouter);
 
 apiV1Router.use("/", (_, res: Response) => {
   res.redirect("/");

@@ -19,11 +19,6 @@ type ControllerContext = {
 };
 
 export class UserController {
-  /**
-   * Get all users with optional filtering
-   * @param ctx Context containing query parameters
-   * @param res Express response object
-   */
   public static async getUsers(ctx: ControllerContext, res: Response): Promise<void> {
     try {
       // Validate query parameters
@@ -41,11 +36,6 @@ export class UserController {
     }
   }
 
-  /**
-   * Get a single user by their ID
-   * @param ctx Context containing user ID in params
-   * @param res Express response object
-   */
   public static async getUserById(ctx: ControllerContext, res: Response): Promise<void> {
     try {
       // Validate user ID
@@ -61,16 +51,12 @@ export class UserController {
       }
 
       res.status(200).json(user);
+      return;
     } catch (error) {
       UserController.handleError(error, res);
     }
   }
 
-  /**
-   * Create a new user
-   * @param ctx Context containing user data in body
-   * @param res Express response object
-   */
   public static async createUser(ctx: ControllerContext, res: Response): Promise<void> {
     try {
       const userDto: CreateUserDto = { name: ctx.body?.name ?? "", email: ctx.body?.email ?? "" };
@@ -90,11 +76,6 @@ export class UserController {
     }
   }
 
-  /**
-   * Update an existing user
-   * @param ctx Context containing user ID in params and update data in body
-   * @param res Express response object
-   */
   public static async updateUser(ctx: ControllerContext, res: Response): Promise<void> {
     try {
       // Validate user ID and update data
@@ -128,11 +109,6 @@ export class UserController {
     }
   }
 
-  /**
-   * Delete a user by their ID
-   * @param ctx Context containing user ID in params
-   * @param res Express response object
-   */
   public static async deleteUser(ctx: ControllerContext, res: Response): Promise<void> {
     try {
       // Validate user ID
