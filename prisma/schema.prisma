@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  owner
+  editor
+  viewer
+}
+
+enum BlockType {
+  text
+  heading
+  list
+  image
+  code
+  embed
+}
+
+enum TargetType {
+  document
+  block
+}
+
+model User {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  name  String
+
+  // Relations
+  workspaces WorkspaceMember[]
+  documents  Document[]        @relation("DocumentAuthor")
+  blocks     Block[]           @relation("BlockCreator")
+  comments   Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Workspace {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  // Relations
+  members   WorkspaceMember[]
+  documents Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkspaceMember {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  role Role
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String    @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+model Document {
+  id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  tags  String[]
+
+  // Relations
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String    @db.ObjectId
+
+  author   User   @relation("DocumentAuthor", fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+
+  blocks   Block[]
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([authorId])
+}
+
+model Block {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  type    BlockType
+  content Json // Flexible content based on block type
+
+  // Relations
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId String   @db.ObjectId
+
+  createdBy   User   @relation("BlockCreator", fields: [createdById], references: [id])
+  createdById String @db.ObjectId
+
+  // Self-relations for nested blocks
+  parent   Block?  @relation("BlockTree", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId String? @db.ObjectId
+  children Block[] @relation("BlockTree")
+
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
+  @@index([parentId])
+  @@index([createdById])
+}
+
+model Comment {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  targetType TargetType
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  // Optional relations based on targetType
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?   @db.ObjectId
+
+  block   Block?  @relation(fields: [blockId], references: [id])
+  blockId String? @db.ObjectId
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([documentId])
+  @@index([blockId])
+}

@@ -1,0 +1,19 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongo-replica
+    ports:
+      - "27017:27017"
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    healthcheck:
+      test: |
+        mongosh --eval "while (!db.isMaster()) { sleep(1000); }"
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - mongo-data:/data/db
+      - ./init-replica.sh:/docker-entrypoint-initdb.d/init-replica.sh
+
+volumes:
+  mongo-data:
