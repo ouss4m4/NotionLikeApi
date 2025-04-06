@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import userRouter from "./user.router";
-import { workSpaceRouter } from "./workSpacerouter";
+import { workSpaceRouter } from "./workspace.router";
 
 const apiV1Router = Router();
 

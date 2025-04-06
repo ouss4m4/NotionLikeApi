@@ -31,7 +31,12 @@ export const workspaceResponseSchema = z.object({
 export const inviteUserToWorkspaceSchema = z.object({
   workspaceId: z.string().min(1),
   userId: z.string().min(1),
-  role: z.enum(["owner", "editor", "viewer"]),
+  role: z.enum(["editor", "viewer"]),
+});
+
+export const removeWorkspaceMemberSchema = z.object({
+  workspaceId: z.string().min(1),
+  userId: z.string().min(1),
 });
 
 // Types
@@ -39,17 +44,25 @@ export type CreateWorkspaceDto = z.infer<typeof createWorkspaceSchema>;
 export type UpdateWorkspaceDto = z.infer<typeof updateWorkspaceSchema>;
 export type WorkspaceIdParams = z.infer<typeof workspaceIdSchema>;
 export type WorkspaceResponseDto = z.infer<typeof workspaceResponseSchema>;
-export type InviteUserDto = z.infer<typeof inviteUserToWorkspaceSchema>;
+export type InviteMemberDto = z.infer<typeof inviteUserToWorkspaceSchema>;
+export type removeWorkspaceMemberDto = z.infer<typeof removeWorkspaceMemberSchema>;
 
 // Validators
 export const validateCreateWorkspace = (data: unknown) => {
   return createWorkspaceSchema.parse(data);
 };
 
-export const validateInvitePayload = (data: unknown): InviteUserDto => {
+export const validateInvitePayload = (data: unknown): InviteMemberDto => {
   return inviteUserToWorkspaceSchema.parse(data);
 };
 
+export const validateUpdateMemberRolePayload = (data: unknown): InviteMemberDto => {
+  return inviteUserToWorkspaceSchema.parse(data);
+};
+
+export const validateRemoveWorkspaceMemberPayload = (data: unknown) => {
+  return removeWorkspaceMemberSchema.parse(data);
+};
 export const validateUpdateWorkspace = (data: unknown) => {
   return updateWorkspaceSchema.parse(data);
 };

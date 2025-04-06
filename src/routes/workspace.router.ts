@@ -31,4 +31,28 @@ workSpaceRouter.put(
     await WorkspaceController.updateWorkspaceById({ params: req.params, body: req.body }, res);
   })
 );
+
+// WORKSPACE MEMBER ROUTES
+
+workSpaceRouter.post(
+  "/:id/members",
+  asyncHandler(async (req: Request, res: Response) => {
+    await WorkspaceController.addMember({ params: req.params, body: req.body }, res);
+  })
+);
+
+workSpaceRouter.put(
+  "/:id/members",
+  asyncHandler(async (req: Request, res: Response) => {
+    await WorkspaceController.editMemberRole({ params: req.params, body: req.body }, res);
+  })
+);
+
+workSpaceRouter.delete(
+  "/:id/members/:userId",
+  asyncHandler(async (req: Request, res: Response) => {
+    await WorkspaceController.removeMember({ params: req.params }, res);
+  })
+);
+
 export { workSpaceRouter };
