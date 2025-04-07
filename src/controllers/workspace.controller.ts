@@ -10,11 +10,7 @@ import {
   validateUpdateMemberRolePayload,
   validateRemoveWorkspaceMemberPayload,
 } from "../dtos/workspace.dto";
-
-type ControllerContext = {
-  body?: any;
-  params?: any;
-};
+import { ControllerContext } from "../typings/types";
 
 export class WorkspaceController {
   public static async createWorkspace(ctx: ControllerContext, res: Response): Promise<void> {

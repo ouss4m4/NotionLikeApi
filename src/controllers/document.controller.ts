@@ -3,12 +3,7 @@ import { Request, Response } from "express";
 import { validateCreateDocument, validateDocumentId, validateUpdateDocument } from "../dtos/document.dto";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
-type ControllerContext = {
-  query?: any;
-  body?: any;
-  params?: any;
-};
+import { ControllerContext } from "../typings/types";
 
 export class DocumentController {
   static async getDocuments(res: Response) {

@@ -11,12 +11,7 @@ import {
   validateUserQuery,
 } from "../dtos/user.dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
-type ControllerContext = {
-  query?: any;
-  body?: any;
-  params?: any;
-};
+import { ControllerContext } from "../typings/types";
 
 export class UserController {
   public static async getUsers(ctx: ControllerContext, res: Response): Promise<void> {

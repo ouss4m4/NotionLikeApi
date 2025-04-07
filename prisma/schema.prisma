@@ -97,7 +97,7 @@ model Document {
 model Block {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
   type    BlockType
-  content Json // Flexible content based on block type
+  content Json
 
   // Relations
   document   Document @relation(fields: [documentId], references: [id])

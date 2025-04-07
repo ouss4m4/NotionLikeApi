@@ -1,7 +1,8 @@
+import { BlockType } from "@prisma/client";
 import { z } from "zod";
 
 export const createBlockSchema = z.object({
-  type: z.string().min(1),
+  type: z.nativeEnum(BlockType),
   content: z.any(),
   documentId: z.string().min(1),
   createdById: z.string().min(1),
@@ -24,6 +25,6 @@ export type UpdateBlockDto = z.infer<typeof updateBlockSchema>;
 export type BlockIdParams = z.infer<typeof blockIdSchema>;
 
 // Validators
-export const validateCreateBlock = (data: unknown): CreateBlockDto => createBlockSchema.parse(data);
+export const validateCreateBlockPayload = (data: unknown): CreateBlockDto => createBlockSchema.parse(data);
 export const validateUpdateBlock = (data: unknown): UpdateBlockDto => updateBlockSchema.parse(data);
 export const validateBlockId = (data: unknown): BlockIdParams => blockIdSchema.parse(data);
