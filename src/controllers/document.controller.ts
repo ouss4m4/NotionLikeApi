@@ -4,8 +4,25 @@ import { validateCreateDocument, validateDocumentId, validateUpdateDocument } fr
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ControllerContext } from "../typings/types";
+import { BlockController } from "./block.controller";
+import { buildBlockTree } from "../lib/buildBlockTree";
 
 export class DocumentController {
+  static async getFullDocument(ctx: ControllerContext, res: Response): Promise<void> {
+    const { id } = ctx.params;
+    const doc = await prisma.document.findUnique({ where: { id }, include: { author: true, workspace: true } });
+
+    if (!doc) {
+      res.status(404).json({ error: "document not found" });
+      return;
+    }
+
+    const docBlocks = await prisma.block.findMany({ where: { documentId: id } });
+
+    const blockTree = buildBlockTree(docBlocks);
+
+    res.status(200).json({ ...doc, blocks: blockTree });
+  }
   static async getDocuments(res: Response) {
     try {
       const docs = await prisma.document.findMany({

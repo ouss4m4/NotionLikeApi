@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { prisma } from "../lib/prisma/prisma";
 import { validateCreateBlockPayload } from "../dtos/block.dto";
+import { buildBlockTree } from "../lib/buildBlockTree";
 
 export class BlockController {
   public static async createBlock(ctx: ControllerContext, res: Response): Promise<void> {
@@ -63,7 +64,26 @@ export class BlockController {
   }
 
   public static async getBlocksByDocumentId(ctx: ControllerContext, res: Response): Promise<void> {
-    // const {};
+    try {
+      const { id } = ctx.params;
+      if (!id) {
+        res.status(404).json({ error: "Document Id Is Reqruied" });
+        return;
+      }
+
+      // find parent blocks.
+      const docBlocks = await prisma.block.findMany({
+        where: {
+          documentId: id,
+        },
+      });
+
+      // for each block start nesting blocks if any
+      const blocks = buildBlockTree(docBlocks);
+      res.status(200).json(blocks);
+    } catch (error) {
+      this.handleError(error, res);
+    }
   }
 
   // get children of a block (blocks of a block)
