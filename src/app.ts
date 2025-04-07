@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import { prisma } from "./lib/prisma/prisma";
 import { apiV1Router } from "./routes/apiv1";
+import passport from "passport";
+import "./config/passport";
 
 // Initialize Express app
 const app = express();
@@ -8,6 +10,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 // Simple route for testing
 app.get("/", (req: Request, res: Response) => {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma/prisma";
 import { ZodError } from "zod";
+import bcrypt from "bcryptjs";
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -12,6 +13,7 @@ import {
 } from "../dtos/user.dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ControllerContext } from "../typings/types";
+import { handleLogin, generateToken } from "../middleware/auth.middleware";
 
 export class UserController {
   public static async getUsers(ctx: ControllerContext, res: Response): Promise<void> {
@@ -54,21 +56,36 @@ export class UserController {
 
   public static async createUser(ctx: ControllerContext, res: Response): Promise<void> {
     try {
-      const userDto: CreateUserDto = { name: ctx.body?.name ?? "", email: ctx.body?.email ?? "" };
       // Validate request body against the schema
-      const validatedData = validateUserCreate(userDto);
+      const validatedData = validateUserCreate(ctx.body);
+
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
       const user = await prisma.user.create({
         data: {
           name: validatedData.name,
           email: validatedData.email.toLowerCase(),
+          password: hashedPassword,
         },
       });
 
-      res.status(201).json(user);
+      // Generate JWT token
+      const token = generateToken(user);
+
+      // Return user data without password
+      const { password, ...userWithoutPassword } = user;
+      res.status(201).json({ user: userWithoutPassword, token });
     } catch (error) {
       UserController.handleError(error, res);
     }
+  }
+
+  public static async login(req: Request, res: Response): Promise<void> {
+    handleLogin(req, res, (error) => {
+      if (error) {
+        UserController.handleError(error, res);
+      }
+    });
   }
 
   public static async updateUser(ctx: ControllerContext, res: Response): Promise<void> {
@@ -81,6 +98,11 @@ export class UserController {
       if (Object.keys(updateData).length === 0) {
         res.status(400).json({ error: "No fields provided for update" });
         return;
+      }
+
+      // If password is being updated, hash it
+      if (updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, 10);
       }
 
       // Check if user exists
@@ -98,7 +120,9 @@ export class UserController {
         data: updateData,
       });
 
-      res.status(200).json(updatedUser);
+      // Return updated user data without password
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.status(200).json(userWithoutPassword);
     } catch (error) {
       UserController.handleError(error, res);
     }

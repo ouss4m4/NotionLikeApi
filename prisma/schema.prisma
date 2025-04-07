@@ -28,9 +28,10 @@ enum TargetType {
 }
 
 model User {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
-  name  String
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  name     String
+  password String
 
   // Relations
   workspaces WorkspaceMember[]

@@ -3,6 +3,7 @@ import { z } from "zod";
 const userBaseSchema = {
   email: z.string().email({ message: "Invalid email format" }),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 };
 
 export const createUserSchema = z.object({
@@ -12,6 +13,7 @@ export const createUserSchema = z.object({
 export const updateUserSchema = z.object({
   email: userBaseSchema.email.optional(),
   name: userBaseSchema.name.optional(),
+  password: userBaseSchema.password.optional(),
 });
 
 export const userIdSchema = z.object({
@@ -27,7 +29,8 @@ export const userQuerySchema = z
 // Response schema (what will be returned to clients)
 export const userResponseSchema = z.object({
   id: z.string(),
-  ...userBaseSchema,
+  email: userBaseSchema.email,
+  name: userBaseSchema.name,
   createdAt: z.date(),
   updatedAt: z.date(),
 });
