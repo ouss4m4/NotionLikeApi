@@ -11,8 +11,8 @@ apiV1Router.use("/workspaces", workSpaceRouter);
 apiV1Router.use("/documents", documentsRouter);
 apiV1Router.use("/blocks", blockRouter);
 
-apiV1Router.use("/", (_, res: Response) => {
-  res.redirect("/");
-});
+// apiV1Router.use("/", (_, res: Response) => {
+//   res.redirect("/");
+// });
 
 export { apiV1Router };

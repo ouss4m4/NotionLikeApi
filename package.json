@@ -26,6 +26,7 @@
   "homepage": "https://github.com/ouss4m4/NotionLike#readme",
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.0",
     "@types/passport": "^1.0.17",
@@ -42,6 +43,7 @@
     "@prisma/client": "6.5.0",
     "@types/express": "^5.0.1",
     "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
