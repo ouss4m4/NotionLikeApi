@@ -15,7 +15,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const router = useRouter()
 const props = defineProps<{
   class?: HTMLAttributes['class'],
@@ -92,7 +94,9 @@ const handleLogin = async () => {
       return
     }
 
-    localStorage.setItem('jwt', data.token)
+    // localStorage.setItem('jwt', data.token)userStore.setToken(data.token)
+    userStore.setToken(data.token)
+
     router.push("/")
   } catch (error) {
     console.error(error)
