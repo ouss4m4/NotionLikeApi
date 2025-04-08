@@ -8,6 +8,7 @@ export const authenticateJWT = passport.authenticate("jwt", { session: false });
 
 export const generateToken = (user: User) => {
   const payload = {
+    id: user.id,
     name: user.name,
     email: user.email,
   };
