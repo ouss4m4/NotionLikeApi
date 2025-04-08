@@ -1,12 +1,3 @@
-<script setup lang="ts">
-import { Button } from '@/components/ui/button'
-
-</script>
-
 <template>
-  <main>
-    Home Page
-    <Button>Click me</Button>
-
-  </main>
+  <h1>Home Page</h1>
 </template>
