@@ -3,6 +3,7 @@ import { Strategy as JwtStrategy, ExtractJwt, VerifiedCallback } from "passport-
 import { Strategy as LocalStrategy } from "passport-local";
 import { prisma } from "../lib/prisma/prisma";
 import bcrypt from "bcryptjs";
+import { safeUserSelect } from "../lib/prisma/safeSelect";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -33,7 +34,11 @@ passport.use(
           return done(null, false, { message: "Invalid email or password" });
         }
 
-        return done(null, user);
+        return done(null, {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        });
       } catch (error) {
         return done(error);
       }
@@ -52,6 +57,7 @@ passport.use(
       try {
         const user = await prisma.user.findUnique({
           where: { id: payload.id },
+          select: safeUserSelect,
         });
 
         if (!user) {

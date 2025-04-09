@@ -4,6 +4,7 @@ import LoginView from '@/views/LoginView.vue'
 import SignupView from '@/views/SignupView.vue'
 import { useUserStore } from '@/stores/user'
 import MainLayout from '@/views/MainLayout.vue'
+import DocumentView from '@/views/DocumentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
           path: '',
           name: 'Home',
           component: HomeView,
+        },
+        {
+          path: 'documents/:id',
+          name: 'Document',
+          component: DocumentView,
         },
         // add more layout-wrapped routes here if needed
       ],

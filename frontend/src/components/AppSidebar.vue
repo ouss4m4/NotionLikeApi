@@ -27,7 +27,7 @@ const { name, logout } = useUserStore()
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {

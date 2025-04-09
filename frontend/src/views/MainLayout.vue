@@ -6,9 +6,9 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 <template>
   <SidebarProvider>
     <AppSidebar />
-    <main>
+    <main class="w-full  h-screen overflow-scroll">
       <SidebarTrigger />
-      <div class="px-4">
+      <div class="px-4 ">
         <RouterView />
       </div>
     </main>

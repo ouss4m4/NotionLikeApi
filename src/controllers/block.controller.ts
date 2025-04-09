@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ControllerContext } from "../typings/types";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -7,9 +7,15 @@ import { validateCreateBlockPayload } from "../dtos/block.dto";
 import { buildBlockTree } from "../lib/buildBlockTree";
 
 export class BlockController {
-  public static async createBlock(ctx: ControllerContext, res: Response): Promise<void> {
+  public static async createBlock(req: Request, res: Response): Promise<void> {
     try {
-      const { documentId, type, createdById, content, parentId = null } = validateCreateBlockPayload(ctx.body);
+      const userId = (req.user as any)?.id ?? "";
+      if (!userId) {
+        res.status(403);
+        return;
+      }
+
+      const { documentId, type, content, parentId = null } = validateCreateBlockPayload(req.body);
 
       // bring the document and the workspaceId
       const document = await prisma.document.findUnique({
@@ -24,7 +30,7 @@ export class BlockController {
       // 2. Check if the user is a member of that workspace
       const userCreatingBlock = await prisma.workspaceMember.findFirst({
         where: {
-          userId: createdById,
+          userId: userId,
           workspaceId: document.workspaceId,
         },
       });
@@ -44,7 +50,7 @@ export class BlockController {
           type,
           content,
           documentId,
-          createdById,
+          createdById: userId,
           parentId,
         },
       });
