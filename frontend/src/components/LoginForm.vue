@@ -96,7 +96,7 @@ const handleLogin = async () => {
 
     // localStorage.setItem('jwt', data.token)userStore.setToken(data.token)
     userStore.setToken(data.token)
-
+    userStore.setProfile(data.user.name ?? '', data.user.email ?? '')
     router.push("/")
   } catch (error) {
     console.error(error)

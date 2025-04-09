@@ -9,11 +9,20 @@ import {
   SidebarMenuItem,
   SidebarGroupLabel,
   SidebarMenuButton,
-  SidebarMenu
+  SidebarMenu,
+
+
 } from '@/components/ui/sidebar';
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback
+} from '@/components/ui/avatar'
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-vue-next";
+import { Calendar, Home, Inbox, Search, Settings, LogOut } from "lucide-vue-next";
+import { useUserStore } from '@/stores/user'
 
+const { name, logout } = useUserStore()
 
 const items = [
   {
@@ -47,7 +56,17 @@ const items = [
 
 <template>
   <Sidebar collapsible="icon">
-    <SidebarHeader />
+    <SidebarHeader>
+      <SidebarMenuButton asChild>
+        <SidebarMenuItem>
+          <Avatar>
+            <AvatarImage :src="'https://ui-avatars.com/api/?name=' + name" alt="avatar" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <span>{{ name.charAt(0).toUpperCase() + name.slice(1).toLowerCase() }}</span>
+        </SidebarMenuItem>
+      </SidebarMenuButton>
+    </SidebarHeader>
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -66,7 +85,13 @@ const items = [
       </SidebarGroup>
     </SidebarContent>
     <SidebarFooter>
-
+      <!-- <SidebarMenuItem> -->
+      <SidebarMenuButton asChild class="mb-4">
+        <RouterLink @click="logout" to="#">
+          <LogOut />
+          <span>Logout</span>
+        </RouterLink>
+      </SidebarMenuButton>
     </SidebarFooter>
   </Sidebar>
 </template>

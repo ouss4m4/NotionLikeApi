@@ -34,9 +34,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _) => {
-  const userStore = useUserStore()
+  const { isAuthenticated } = useUserStore()
 
-  if (!userStore.isAuthenticated && to.name !== 'Login') {
+  if (!isAuthenticated && to.name !== 'Login') {
     return { name: 'Login' }
   }
 })
